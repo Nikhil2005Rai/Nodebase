@@ -1,7 +1,9 @@
+import { Button } from "@/components/ui/button";
+
 const Page = () => {
   return (
-    <div className="text-red-500 font-bold">
-      Hello World
+    <div>
+     <Button variant="secondary">Click Me</Button>
     </div>
   );
 };
