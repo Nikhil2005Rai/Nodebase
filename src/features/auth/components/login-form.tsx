@@ -27,47 +27,37 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
 
-const registerSchema = z.object({
+const loginSchema = z.object({
     email: z.email("Please enter a valid email address"),
     password: z.string().min(1, "Password is required"),
-    confirmPassword: z.string(),
-})
-.refine((data) => data.password === data.confirmPassword, {
-    message: "Password don't match",
-    path: ["confirmPassword"],
 });
 
-type registerFormValues = z.infer<typeof registerSchema>;
+type loginFormValues = z.infer<typeof loginSchema>;
 
-export function RegisterForm() {
+export function LoginForm() {
     const router = useRouter();
 
-    const form = useForm<registerFormValues>({
-        resolver: zodResolver(registerSchema),
+    const form = useForm<loginFormValues>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             email: "",
             password: "",
-            confirmPassword: "",
         },
     });
 
-    const onSubmit = async (values: registerFormValues) => {
-        await authClient.signUp.email(
-            {
-                name: values.email,
-                email: values.email,
-                password: values.password,
-                callbackURL: "/",
-            }, 
-            {
-                onSuccess: () => {
-                    router.push("/");
-                },
-                onError: (ctx) => {
-                    toast.error(ctx.error.messgae);
-                }
+    const onSubmit = async (values: loginFormValues) => {
+        await authClient.signIn.email({
+            email: values.email,
+            password: values.password,
+            callbackURL: "/",
+        }, {
+            onSuccess: () => {
+                router.push("/");
+            },
+            onError: (ctx) => {
+                toast.error(ctx.error.message);
             }
-        )
+        })
     };
 
     const isPending = form.formState.isSubmitting;
@@ -76,10 +66,10 @@ export function RegisterForm() {
             <Card>
                 <CardHeader className="text-center">
                     <CardTitle>
-                        Get Started
+                        Welcome back
                     </CardTitle>
                     <CardDescription>
-                        Create your account to get started
+                        Login to continue
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -93,6 +83,7 @@ export function RegisterForm() {
                                         type="button"
                                         disabled={isPending}
                                     >
+                                    <Image alt="Github" src="/logos/github.svg" width={20} height={20}/>
                                       Continue with Github
                                     </Button>
                                     <Button 
@@ -101,6 +92,7 @@ export function RegisterForm() {
                                         type="button"
                                         disabled={isPending}
                                     >
+                                        <Image alt="Google" src="/logos/google.svg" width={20} height={20} />
                                       Continue with Google
                                     </Button>
                                 </div>
@@ -139,31 +131,14 @@ export function RegisterForm() {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField 
-                                        control={form.control}
-                                        name="confirmPassword"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Confirm password</FormLabel>
-                                                <FormControl>
-                                                    <Input 
-                                                        type="password"
-                                                        placeholder="********"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
                                     <Button type="submit" className="w-full" disabled={isPending}>
-                                        Sign up
+                                        Login
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm">
-                                    Already have an account?{" "}
-                                    <Link href="/signin" className="underline underline-offset-4">
-                                        Sign in
+                                    Don&apos;t have an account?{" "}
+                                    <Link href="/signup" className="underline underline-offset-4">
+                                        Sign up
                                     </Link>
                                 </div>
                             </div>
