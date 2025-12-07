@@ -1,3 +1,4 @@
+import { inngest } from '@/inngest/client';
 import { createTRPCRouter, protectedProcedure } from '../init';
 import prisma from '@/lib/db';
 export const appRouter = createTRPCRouter({
@@ -5,18 +6,14 @@ export const appRouter = createTRPCRouter({
       return prisma.workflow.findMany();
   }),
   createWorkflow: protectedProcedure.mutation(async () => {
-    //Fetch the video
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
-    //Transcribe the video
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
-    //Send transcript to openai
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
-
-    return prisma.workflow.create({
+    await inngest.send({
+      name: "test/hello.world",
       data: {
-        name: "test-workflow"
-      },
+        email: "test@test.com"
+      }
     })
+
+    return { success: true, message: "Job queued" }
   })
 });
 // export type definition of API
