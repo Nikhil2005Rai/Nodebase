@@ -22,6 +22,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 
 const menuItems = [
     {
@@ -66,24 +67,26 @@ export const AppSidebar = () => {
                 {menuItems.map((group) => (
                     <SidebarGroup key={group.title}>
                         <SidebarGroupContent>
-                            {group.items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        tooltip={item.title}
-                                        isActive={
-                                            item.url === "/" 
-                                                ? pathname === "/" : pathname.startsWith(item.url)
-                                        }
-                                        asChild
-                                        className="gap-x-4 h-10 px-4"
-                                    >
-                                        <Link href={item.url} prefetch>
-                                            <item.icon className="size-4"/>
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                            <SidebarMenu>
+                                {group.items.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton
+                                            tooltip={item.title}
+                                            isActive={
+                                                item.url === "/" 
+                                                    ? pathname === "/" : pathname.startsWith(item.url)
+                                            }
+                                            asChild
+                                            className="gap-x-4 h-10 px-4"
+                                        >
+                                            <Link href={item.url} prefetch>
+                                                <item.icon className="size-4"/>
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
                 ))}
@@ -114,7 +117,13 @@ export const AppSidebar = () => {
                         <SidebarMenuButton
                             tooltip="Sign out"
                             className="gap-x-4 h-10 px-4"
-                            onClick={() => {}}
+                            onClick={() => authClient.signOut({
+                                fetchOptions: {
+                                    onSuccess: () => {
+                                        router.push("/signin");
+                                    },
+                                },
+                            })}
                         >
                             <LogOutIcon className="h-4 w-4"/>
                             <span>Sign out</span>
