@@ -5,14 +5,19 @@ import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/use-workflows"
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
 import { useWorkflowsParams } from "../hooks/use-workflows-params";
+import { useEntitySearch } from "@/hooks/use-entity-search";
 
 export const WorkflowsSearch = () => {
-const [params, setParams] = useWorkflowsParams();
+    const [params, setParams] = useWorkflowsParams();
+    const { searchValue, onSearchChange } = useEntitySearch({
+        params,
+        setParams,
+    });
 
     return (
         <EntitySearch 
-            value = {""}
-            onChange={() => {}}
+            value = {searchValue}
+            onChange={onSearchChange}
             placeholder="Search workflows"
         />
     );
