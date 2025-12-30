@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns";
 import { EmptyView, EntityContainer, EntityHeader, EntityItem, EntityList, EntityPagination, EntitySearch, ErrorView, LoadingView } from "@/components/entity-components";
 import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/use-workflows"
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
@@ -145,9 +146,9 @@ export const WorkflowItem = ({
             title={data.name}
             subtitle={
                 <>
-                    Updated TODO{" "}
+                    Updated {formatDistanceToNow(data.updatedAt, { addSuffix: true })}{" "}
                     &bull; Created{" "}
-                    TODO
+                    {formatDistanceToNow(data.createdAt, { addSuffix: true })}
                 </>
             }
             image={
