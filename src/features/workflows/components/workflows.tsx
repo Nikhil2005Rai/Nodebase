@@ -1,6 +1,6 @@
 "use client";
 
-import { EmptyView, EntityContainer, EntityHeader, EntityPagination, EntitySearch, ErrorView, LoadingView } from "@/components/entity-components";
+import { EmptyView, EntityContainer, EntityHeader, EntityList, EntityPagination, EntitySearch, ErrorView, LoadingView } from "@/components/entity-components";
 import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/use-workflows"
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
@@ -27,19 +27,14 @@ export const WorkflowsSearch = () => {
 export const WorkflowsList = () => {
     const workflows = useSuspenseWorkflows();
 
-    if(workflows.data.items.length === 0) {
-        return (
-            <WorkflowsEmpty />
-        );
-    };
-
     return (
-        <div className="flex-1 flex justify-center items-center">
-            <p>
-                {JSON.stringify(workflows.data, null, 2)}
-            </p>
-        </div>
-    );
+        <EntityList 
+            items={workflows.data.items}
+            getKey={(workflow) => workflow.id}
+            renderItem={(workflow) => <p>{workflow.name}</p>}
+            emptyView={<WorkflowsEmpty />}
+        />
+    )
 };
 
 export const WorkflowsHeader = ({ disabled }: {disabled? : boolean}) => {
@@ -112,6 +107,7 @@ export const WorkflowsError = () => {
 }
 
 export const WorkflowsEmpty = () => {
+    const router = useRouter();
     const createWorkflow = useCreateWorkflow();
     const { handleError, modal } = useUpgradeModal();
 
@@ -120,6 +116,9 @@ export const WorkflowsEmpty = () => {
             onError: (error) => {
                 handleError(error);
             },
+            onSuccess: (data) => {
+                router.push(`/workflows/${data.id}`);
+            }
         });
     };
 
