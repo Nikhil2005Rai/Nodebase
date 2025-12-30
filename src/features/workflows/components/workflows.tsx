@@ -2,7 +2,7 @@
 
 import { formatDistanceToNow } from "date-fns";
 import { EmptyView, EntityContainer, EntityHeader, EntityItem, EntityList, EntityPagination, EntitySearch, ErrorView, LoadingView } from "@/components/entity-components";
-import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/use-workflows"
+import { useCreateWorkflow, useRemoveWorkflow, useSuspenseWorkflows } from "../hooks/use-workflows"
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
 import { useRouter } from "next/navigation";
 import { useWorkflowsParams } from "../hooks/use-workflows-params";
@@ -140,6 +140,11 @@ export const WorkflowItem = ({
 }: {
     data: Workflow
 }) => {
+    const removeWorflow = useRemoveWorkflow();
+
+    const handleRemove = () => {
+        removeWorflow.mutate({ id: data.id });
+    }
     return (
         <EntityItem
             href={`/workflows/${data.id}`}
@@ -156,8 +161,8 @@ export const WorkflowItem = ({
                     <WorkflowIcon className="size-5 text-muted-foreground"/>
                 </div>
             }
-            onRemove={() => {}}
-            isRemoving={false}
+            onRemove={handleRemove}
+            isRemoving={removeWorflow.isPending}
         />
     )
 }
