@@ -61,11 +61,11 @@ export function NodeSelector ({
         // Check if trying to add a manual trigger when one already exist
         if(selection.type === NodeType.MANUAL_TRIGGER) {
             const nodes = getNodes();
-            const hasManulaTrigger = nodes.some(
+            const hasManualTrigger = nodes.some(
                 (node) => node.type === NodeType.MANUAL_TRIGGER,
             );
 
-            if(hasManulaTrigger) {
+            if(hasManualTrigger) {
                 toast.error("Only one manual trigger is allowed per workflow");
                 return;
             }
