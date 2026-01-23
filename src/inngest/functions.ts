@@ -7,7 +7,10 @@ import { getExecutor } from "@/features/executions/lib/executor-registry";
 import { httpRequestChannel } from "./channels/http-request";
 
 export const executeWorkflow = inngest.createFunction(
-  { id: "execute-workflow" },
+  { 
+    id: "execute-workflow",
+    retries: 0,
+   },
   { 
     event: "workflows/execute.workflow",
     channels: [
