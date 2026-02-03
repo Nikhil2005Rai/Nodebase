@@ -16,7 +16,7 @@ import {
     SheetTitle,
     SheetTrigger
 } from "@/components/ui/sheet";
-import { NodeType } from "@/generated/prisma/enums";
+import { NodeType } from "@/generated/prisma/";
 import { Separator } from "@radix-ui/react-separator";
 
 export type NodeTypeOption = {
@@ -32,6 +32,12 @@ const triggerNodes: NodeTypeOption[] = [
         label: "Trigger manually",
         description: "Runs the flow on click a button. Good for getting started quickly",
         icon: MousePointerIcon
+    },
+    {
+        type: NodeType.GOOGLE_FORM_TRIGGER,
+        label: "Google Form",
+        description: "Runs the flow when a Google Form is submitted",
+        icon: "/logos/googleform.svg",
     },
 ];
 
