@@ -2,8 +2,8 @@ import Handlebars from "handlebars";
 import type { NodeExecutor } from "@/features/executions/types";
 import { NonRetriableError } from "inngest";
 import { generateText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { openAiChannel } from "@/inngest/channels/openai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { anthropicChannel } from "@/inngest/channels/anthropic";
 
 Handlebars.registerHelper("json", (context) => {
     const jsonString = JSON.stringify(context, null, 2);
@@ -12,14 +12,14 @@ Handlebars.registerHelper("json", (context) => {
     return safeString;
 });
 
-type OpenAiData = {
+type AnthropicData = {
     variableName?: string;
     model?: string;
     systemPrompt?: string;
     userPrompt?: string;
 };
 
-export const openaiExecutor: NodeExecutor<OpenAiData> = async({
+export const anthropicExecutor: NodeExecutor<AnthropicData> = async({
     data,
     nodeId,
     context,
@@ -27,7 +27,7 @@ export const openaiExecutor: NodeExecutor<OpenAiData> = async({
     publish,
 }) => {
     await publish(
-        openAiChannel().status({
+        anthropicChannel().status({
             nodeId,
             status: "loading",
         }),
@@ -35,22 +35,22 @@ export const openaiExecutor: NodeExecutor<OpenAiData> = async({
     
     if (!data.variableName) {
         await publish(
-            openAiChannel().status({
+            anthropicChannel().status({
                 nodeId,
                 status: "error",
             })
         );
-        throw new NonRetriableError("OpenAi node: Variable name is missing");
+        throw new NonRetriableError("Anthropic node: Variable name is missing");
     }
 
     if (!data.userPrompt) {
         await publish(
-            openAiChannel().status({
+            anthropicChannel().status({
                 nodeId,
                 status: "error",
             })
         );
-        throw new NonRetriableError("OpenAi node: User prompt is missing");
+        throw new NonRetriableError("Anthropic node: User prompt is missing");
     }
 
     //TODO: Throw if credential is missing
@@ -63,18 +63,18 @@ export const openaiExecutor: NodeExecutor<OpenAiData> = async({
 
     // TODO: Fetch credential that user selected
 
-    const credentialValue = process.env.OPENAI_API_KEY!;
+    const credentialValue = process.env.ANTHROPIC_API_KEY!;
 
-    const openai = createOpenAI({
+    const anthropic = createAnthropic({
         apiKey: credentialValue,
     });
 
     try {
         const { steps } = await step.ai.wrap(
-            "openai-generate-text",
+            "anthropic-generate-text",
             generateText,
             {
-                model: openai(data.model || "gpt-4.1-mini"),
+                model: anthropic(data.model || "claude-3.5-haiku"),
                 system: systemPrompt,
                 prompt: userPrompt,
                 experimental_telemetry: {
@@ -91,7 +91,7 @@ export const openaiExecutor: NodeExecutor<OpenAiData> = async({
                 : "";
 
         await publish(
-            openAiChannel().status({
+            anthropicChannel().status({
                 nodeId,
                 status: "success",
             }),
@@ -105,7 +105,7 @@ export const openaiExecutor: NodeExecutor<OpenAiData> = async({
         }
     } catch (error) {
         await publish(
-            openAiChannel().status({
+            anthropicChannel().status({
                 nodeId,
                 status: "error",
             }),
