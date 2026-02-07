@@ -220,3 +220,13 @@ export const CredentialForm = ({
         </>
     )
 };
+
+export const CredentialView = ({
+    credentialId,
+}: { credentialId: string }) => {
+    const params = useParams();
+    const { data: credential } = useSuspenseCredential(credentialId);
+
+    return <CredentialForm initialData={credential}/>
+};
+
