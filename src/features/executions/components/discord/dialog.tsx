@@ -123,8 +123,9 @@ export const DiscordDialog = ({
                                 <FormItem>
                                     <FormLabel>Webhook URL</FormLabel>
                                     <FormControl>
-                                        <Input 
+                                        <Input
                                             placeholder="https://discord.com/api/webhooks/..."
+                                            {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -163,6 +164,7 @@ export const DiscordDialog = ({
                                     <FormControl>
                                         <Input
                                             placeholder="Workflow Bot"
+                                            {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
