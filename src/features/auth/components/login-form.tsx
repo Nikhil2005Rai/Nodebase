@@ -86,6 +86,11 @@ export function LoginForm() {
         })
     };
 
+    const useDemoCredentials = () => {
+        form.setValue("email", "user@user.com", { shouldValidate: true });
+        form.setValue("password", "User@123", { shouldValidate: true });
+    };
+
     const isPending = form.formState.isSubmitting;
     return (
         <div className="flex flex-col gap-6">
@@ -103,17 +108,17 @@ export function LoginForm() {
                         <form onSubmit={form.handleSubmit(onSubmit)}>
                             <div className="grid gap-6">
                                 <div className="flex flex-col gap-4">
-                                    <Button 
+                                    <Button
                                         onClick={signInGithub}
                                         variant="outline"
                                         className="w-full"
                                         type="button"
                                         disabled={isPending}
                                     >
-                                    <Image alt="Github" src="/logos/github.svg" width={20} height={20}/>
-                                      Continue with Github
+                                        <Image alt="Github" src="/logos/github.svg" width={20} height={20} />
+                                        Continue with Github
                                     </Button>
-                                    <Button 
+                                    <Button
                                         onClick={signInGoogle}
                                         variant="outline"
                                         className="w-full"
@@ -121,18 +126,18 @@ export function LoginForm() {
                                         disabled={isPending}
                                     >
                                         <Image alt="Google" src="/logos/google.svg" width={20} height={20} />
-                                      Continue with Google
+                                        Continue with Google
                                     </Button>
                                 </div>
                                 <div className="grid gap-6">
-                                    <FormField 
+                                    <FormField
                                         control={form.control}
                                         name="email"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Email</FormLabel>
                                                 <FormControl>
-                                                    <Input 
+                                                    <Input
                                                         type="email"
                                                         placeholder="m@example.com"
                                                         {...field}
@@ -142,14 +147,14 @@ export function LoginForm() {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField 
+                                    <FormField
                                         control={form.control}
                                         name="password"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Password</FormLabel>
                                                 <FormControl>
-                                                    <Input 
+                                                    <Input
                                                         type="password"
                                                         placeholder="********"
                                                         {...field}
@@ -161,6 +166,9 @@ export function LoginForm() {
                                     />
                                     <Button type="submit" className="w-full" disabled={isPending}>
                                         Login
+                                    </Button>
+                                    <Button type="button" className="w-full" disabled={isPending} onClick={useDemoCredentials}>
+                                        Use Demo Credentials
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm">
